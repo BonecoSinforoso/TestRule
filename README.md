@@ -1,3 +1,3 @@
 # TestRule
 
-asd
+Ainda nn funfa cai fora.
