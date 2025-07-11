@@ -1,0 +1,34 @@
+# .github/workflows/block-outdated-feature.yml
+name: Block Outdated Feature Branches
+
+on:
+  push:
+    branches:
+      - 'feat/**'  # ou 'feature/**', dependendo do seu padrão
+
+jobs:
+  check-develop-sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v3
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "you@example.com"
+          git config --global user.name "GitHub Actions"
+
+      - name: Fetch develop
+        run: git fetch origin develop
+
+      - name: Check for missing commits from develop
+        run: |
+          MISSING_COMMITS=$(git cherry origin/develop | grep '^+')
+          if [ -n "$MISSING_COMMITS" ]; then
+            echo "❌ Sua branch está desatualizada com relação à 'develop'."
+            echo "➡️ Faça um merge ou rebase da develop antes de continuar."
+            exit 1
+          else
+            echo "✅ Sua branch está atualizada com a develop."
+          fi
